@@ -15,7 +15,7 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - period.dart
+    - shelf.dart
 # Uncomment the following section to specify additional rules.
 
 # linter:

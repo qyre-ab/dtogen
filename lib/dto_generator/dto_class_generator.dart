@@ -86,19 +86,23 @@ class DtoClassGenerator extends ClassGenerator {
     writeClassDeclaration(buffer, annotation: _jsonSerializableAnnotation);
     writeConstructor(buffer);
     writeLine(buffer);
-    _writeFromJsonConstructor(buffer);
-    writeLine(buffer);
+    if (generateFromJson) {
+      _writeFromJsonConstructor(buffer);
+      writeLine(buffer);
+    }
     if (generateFromEntity) {
       _writeFromEntityFactory(buffer);
       writeLine(buffer);
     }
     writeFields(buffer);
-    writeLine(buffer);
     if (generateToEntity) {
-      _writeToEntityMethod(buffer);
       writeLine(buffer);
+      _writeToEntityMethod(buffer);
     }
-    _writeToJsonMethod(buffer);
+    if (generateToJson) {
+      writeLine(buffer);
+      _writeToJsonMethod(buffer);
+    }
     writeClosing(buffer);
   }
 

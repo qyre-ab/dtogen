@@ -1,12 +1,13 @@
 {
   "configurations": [
     {
-      "name": "Launch",
+      "name": "Launch example",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
       "args": [
-        "example.json"
+        "example.json",
+        "Booking",
       ]
     }
   ]

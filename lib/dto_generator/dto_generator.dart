@@ -1,30 +1,38 @@
 import 'package:json_to_dart_entity/dto_generator/dto_class_generator.dart';
 import 'package:json_to_dart_entity/dto_generator/dto_field.dart';
+import 'package:json_to_dart_entity/dto_generator/string_extension.dart';
 
 class ModelsGenerator {
   ModelsGenerator({
     required this.generateFromJson,
     required this.generateToJson,
+    required this.generateFromEntity,
+    required this.generateToEntity,
     required this.generateEntity,
+    required this.generateCopyWith,
   });
 
   final bool generateFromJson;
   final bool generateToJson;
+  final bool generateFromEntity;
+  final bool generateToEntity;
+
   final bool generateEntity;
+  final bool generateCopyWith;
 
   String generateModels(Json json, [String? initialClassName]) {
     final classes = _parseClasses(json, initialClassName ?? "Generated");
 
     final buffer = StringBuffer();
-    for (final cl in classes) {
+    for (final cl in classes.toList().reversed) {
       buffer.writeln(cl.generate());
     }
 
     return buffer.toString();
   }
 
-  Set<DtoClassGenerator> _parseClasses(Json json, String initialClassName) {
-    final classes = <DtoClassGenerator>{};
+  Set<ClassGenerator> _parseClasses(Json json, String initialClassName) {
+    final classes = <ClassGenerator>{};
     _parseClass(
       className: initialClassName,
       json: json,
@@ -33,10 +41,10 @@ class ModelsGenerator {
     return classes;
   }
 
-  DtoClassGenerator _parseClass({
+  ClassGenerator _parseClass({
     required String className,
     required Json json,
-    required Set<DtoClassGenerator> generatedClasses,
+    required Set<ClassGenerator> generatedClasses,
   }) {
     final fields = _parseClassFields(json, generatedClasses);
     final classGenerator = DtoClassGenerator(
@@ -44,19 +52,34 @@ class ModelsGenerator {
       fields: fields,
       generateFromJson: generateFromJson,
       generateToJson: generateToJson,
+      generateFromEntity: generateFromEntity,
+      generateToEntity: generateToEntity,
     );
     generatedClasses.add(classGenerator);
+    if (generateEntity) {
+      generatedClasses.add(
+        EntityClassGenerator(
+          className: className,
+          fields: fields,
+          addCopyWith: generateCopyWith,
+        ),
+      );
+    }
     return classGenerator;
   }
 
-  List<DtoField> _parseClassFields(Json json, Set<DtoClassGenerator> generatedClasses) {
+  List<ClassField> _parseClassFields(Json json, Set<ClassGenerator> generatedClasses) {
     return json //
         .entries
         .map((entry) => _parseField(entry.key, entry.value, generatedClasses))
         .toList();
   }
 
-  DtoField _parseField(String key, Object value, Set<DtoClassGenerator> generatedClasses) {
+  ClassField _parseField(
+    String key,
+    Object value,
+    Set<ClassGenerator> generatedClasses,
+  ) {
     final String fieldType;
     if (value is String) {
       fieldType = "String";
@@ -81,33 +104,24 @@ class ModelsGenerator {
         "Key: $key, value: $value",
       );
     }
-    return DtoField(
+    return ClassField(
       type: fieldType,
-      name: _classNameFromKey(key).firstCharToLowerCase(),
+      name: _fieldNameFromKey(key),
+      value: value,
     );
   }
 
   String _classNameFromKey(String key) {
-    return key.split("_").map((e) => e.firstCharToUpperCase()).join();
+    var fieldTypeName = key.split("_").map((e) => e.firstCharToUpperCase()).join();
+    if (fieldTypeName.endsWith("s")) {
+      fieldTypeName = fieldTypeName.substring(0, fieldTypeName.length - 1);
+    }
+    return fieldTypeName;
+  }
+
+  String _fieldNameFromKey(String key) {
+    return key.split("_").map((e) => e.firstCharToUpperCase()).join().firstCharToLowerCase();
   }
 }
 
 typedef Json = Map<String, dynamic>;
-
-extension on String {
-  String firstCharToUpperCase() {
-    if (isEmpty) {
-      return "";
-    }
-
-    return "${this[0].toUpperCase()}${substring(1)}";
-  }
-
-  String firstCharToLowerCase() {
-    if (isEmpty) {
-      return "";
-    }
-
-    return "${this[0].toLowerCase()}${substring(1)}";
-  }
-}

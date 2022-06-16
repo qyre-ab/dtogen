@@ -19,6 +19,9 @@ Future<void> main(List<String> args) async {
       generateFromJson: true,
       generateToJson: true,
       generateEntity: true,
+      generateFromEntity: true,
+      generateToEntity: true,
+      generateCopyWith: true,
     ).generateModels(jsonDecode(jsonString), initialClassName);
     print(generatedModels);
   }

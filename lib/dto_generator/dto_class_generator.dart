@@ -1,70 +1,8 @@
-import 'package:json_to_dart_entity/dto_generator/dto_field.dart';
+import 'package:json_to_dart_entity/dto_generator/class_generator.dart';
 import 'package:json_to_dart_entity/dto_generator/string_extension.dart';
-import 'package:meta/meta.dart';
 
-abstract class ClassGenerator {
-  const ClassGenerator({
-    required this.className,
-    required this.fields,
-  });
-
-  final String className;
-  final List<ClassField> fields;
-
-  String generate() {
-    final buffer = StringBuffer();
-    generateClass(buffer);
-    return buffer.toString();
-  }
-
-  void generateClass(StringBuffer buffer);
-
-  @protected
-  void writeClassDeclaration(
-    StringBuffer buffer, {
-    String? annotation,
-    String? extend,
-  }) {
-    if (annotation != null) {
-      buffer.writeln(annotation);
-    }
-
-    buffer.write("class $className ");
-    if (extend != null) {
-      buffer.write("extends $extend ");
-    }
-    buffer.writeln("{");
-  }
-
-  @protected
-  void writeConstructor(StringBuffer buffer) {
-    buffer.writeln("  const $className({");
-    for (final field in fields) {
-      buffer.writeln("    required this.${field.name},");
-    }
-    buffer.writeln("  });");
-  }
-
-  @protected
-  void writeFields(StringBuffer buffer) {
-    for (final field in fields) {
-      buffer.writeln("  final ${field.type} ${field.name};");
-    }
-  }
-
-  @protected
-  void writeClosing(StringBuffer buffer) {
-    buffer.writeln("}");
-  }
-
-  @protected
-  void writeLine(StringBuffer buffer) {
-    buffer.writeln();
-  }
-}
-
-class DtoClassGenerator extends ClassGenerator {
-  const DtoClassGenerator({
+class DtoGenerator extends ClassGenerator {
+  const DtoGenerator({
     required String className,
     required super.fields,
     required this.generateFromJson,
@@ -129,6 +67,8 @@ class DtoClassGenerator extends ClassGenerator {
         fieldValue = "$fieldValue.toString()";
       } else if (field.isList) {
         fieldValue = "$fieldValue.map(${field.genericType}.fromEntity).toList()";
+      } else if (!field.isPrimitiveType) {
+        fieldValue = "${field.type}.fromEntity(entity.${field.name})";
       }
       buffer.writeln("      ${field.name}: $fieldValue,");
     }
@@ -147,6 +87,8 @@ class DtoClassGenerator extends ClassGenerator {
         fieldValue = "DateTime.parse($fieldValue)";
       } else if (field.isList) {
         fieldValue = "$fieldValue.map((e) => e.toEntity()).toList()";
+      } else if (!field.isPrimitiveType) {
+        fieldValue = "$fieldValue.toEntity()";
       }
 
       buffer.writeln("      ${field.name}: $fieldValue,");
@@ -161,50 +103,5 @@ class DtoClassGenerator extends ClassGenerator {
 
   void _writeToJsonMethod(StringBuffer buffer) {
     buffer.writeln("  $_jsonType toJson() => _\$${className}ToJson(this);");
-  }
-}
-
-class EntityClassGenerator extends ClassGenerator {
-  EntityClassGenerator({
-    required super.className,
-    required List<ClassField> fields,
-    required this.addCopyWith,
-  }) : super(
-          fields: fields.map(_mapDtoFieldToEntity).toList(),
-        );
-
-  final bool addCopyWith;
-
-  @override
-  void generateClass(StringBuffer buffer) {
-    writeClassDeclaration(
-      buffer,
-      annotation: addCopyWith ? "@CopyWith()" : null,
-      extend: "Equatable",
-    );
-    writeConstructor(buffer);
-    writeLine(buffer);
-    writeFields(buffer);
-    writeLine(buffer);
-    _writeProperties(buffer);
-    writeClosing(buffer);
-  }
-
-  void _writeProperties(StringBuffer buffer) {
-    buffer.writeln("  @override");
-    buffer.writeln("  List<Object?> get props => [");
-    for (final field in fields) {
-      buffer.writeln("        ${field.name},");
-    }
-    buffer.writeln("      ];");
-  }
-
-  /// Maps string class field to the date class field.
-  static ClassField _mapDtoFieldToEntity(ClassField classField) {
-    final date = classField.date;
-    if (date != null) {
-      return classField.copyWith(type: "DateTime");
-    }
-    return classField.copyWith(type: classField.type.dtoNameToEntity());
   }
 }

@@ -13,6 +13,11 @@ class ClassField {
 
   late final isList = type.startsWith("List");
   late final genericType = _getGenericType();
+  late final isPrimitiveType = _isPrimitiveType();
+
+  bool _isPrimitiveType() {
+    return ['int', 'String', 'double', 'bool'].contains(type);
+  }
 
   String _getGenericType() {
     return type.replaceAll("List<", "").replaceAll(">", "");

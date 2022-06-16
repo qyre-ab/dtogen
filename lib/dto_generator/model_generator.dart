@@ -1,15 +1,18 @@
+import 'package:json_to_dart_entity/dto_generator/class_generator.dart';
 import 'package:json_to_dart_entity/dto_generator/dto_class_generator.dart';
 import 'package:json_to_dart_entity/dto_generator/dto_field.dart';
+import 'package:json_to_dart_entity/dto_generator/entity_generator.dart';
 import 'package:json_to_dart_entity/dto_generator/string_extension.dart';
 
-class ModelsGenerator {
-  ModelsGenerator({
+class ModelGenerator {
+  ModelGenerator({
     required this.generateFromJson,
     required this.generateToJson,
     required this.generateFromEntity,
     required this.generateToEntity,
     required this.generateEntity,
     required this.generateCopyWith,
+    required this.classNamePrefix,
   });
 
   final bool generateFromJson;
@@ -19,6 +22,8 @@ class ModelsGenerator {
 
   final bool generateEntity;
   final bool generateCopyWith;
+
+  final String? classNamePrefix;
 
   String generateModels(Json json, [String? initialClassName]) {
     final classes = _parseClasses(json, initialClassName ?? "Generated");
@@ -46,9 +51,10 @@ class ModelsGenerator {
     required Json json,
     required Set<ClassGenerator> generatedClasses,
   }) {
+    final effectiveClassName = _addPrefixWithoutDuplications(className);
     final fields = _parseClassFields(json, generatedClasses);
-    final classGenerator = DtoClassGenerator(
-      className: className,
+    final classGenerator = DtoGenerator(
+      className: effectiveClassName,
       fields: fields,
       generateFromJson: generateFromJson,
       generateToJson: generateToJson,
@@ -59,13 +65,38 @@ class ModelsGenerator {
     if (generateEntity) {
       generatedClasses.add(
         EntityClassGenerator(
-          className: className,
+          className: effectiveClassName,
           fields: fields,
           addCopyWith: generateCopyWith,
         ),
       );
     }
     return classGenerator;
+  }
+
+  /// Join [classNamePrefix] to [className].
+  ///
+  /// If [classNamePrefix] ends with the same words as [className] then removes these words.
+  /// For example:
+  /// ```dart
+  /// final classNamePrefix = "UpdateBooking";
+  /// ...
+  /// final className = _addPrefixWithoutDuplications("BookingPeriod");
+  /// print(className); // UpdateBookingPeriod
+  /// ```
+  String _addPrefixWithoutDuplications(String className) {
+    final prefix = classNamePrefix;
+    if (prefix == null) return className;
+
+    final prefixParts = prefix.splitByUpperCase();
+    for (var i = prefixParts.length - 1; i > 0; i--) {
+      final prefixPart = prefixParts.skip(i).join();
+      if (className.startsWith(prefixPart)) {
+        return "${prefixParts.take(i).join()}$className";
+      }
+    }
+
+    return "$prefix$className";
   }
 
   List<ClassField> _parseClassFields(Json json, Set<ClassGenerator> generatedClasses) {

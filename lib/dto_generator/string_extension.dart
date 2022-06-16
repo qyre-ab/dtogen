@@ -18,4 +18,8 @@ extension StringExtension on String {
   String dtoNameToEntity() {
     return replaceAll("Dto", "");
   }
+
+  List<String> splitByUpperCase() {
+    return split(RegExp("(?=[A-Z])"));
+  }
 }

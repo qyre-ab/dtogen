@@ -6,8 +6,14 @@
       "request": "launch",
       "program": "lib/main.dart",
       "args": [
-        "example.json",
-        "Booking",
+        "--input",
+        "booking.json",
+        "--init-class",
+        "Period",
+        "--output",
+        "booking.dart",
+        "--prefix",
+        "UpdateBooking"
       ]
     }
   ]

@@ -1,0 +1,92 @@
+{
+  "id": "00bb9e97-3f8f-4eb1-8576-6a378134c4d1",
+  "production_id": "1dfa54db-5dcf-47f6-a960-876e34ce2f08",
+  "begins_at": "2022-06-14T13:21:46.687Z",
+  "ends_at": "2022-06-14T13:21:46.687Z",
+  "bookings": [
+    {
+      "id": "2c088a1a-d636-4311-aa93-13e74ae7fbcd",
+      "period_id": "e756aae8-c47a-4c2f-ae67-d3530afedace",
+      "role_id": "6f74a82c-9bfc-465b-8b85-c704494f3abf",
+      "flagged": true,
+      "people_needed": 0,
+      "people_assigned": 0,
+      "previously_assigned_user_ids": [
+        "Lorem ipsum"
+      ],
+      "locations": [
+        {
+          "id": "e763f6f8-a225-4109-b6b3-dbcd5462a9aa",
+          "city": "Lorem ipsum",
+          "state": "Lorem ipsum",
+          "state_code": "Lorem ipsum",
+          "country": "Lorem ipsum",
+          "country_code": "Lorem ipsum",
+          "formatted_address": "Lorem ipsum",
+          "latitude": 0,
+          "longitude": 0,
+          "type": "Stuffs"
+        }
+      ],
+      "slots": [
+        {
+          "id": "02a292ba-f551-4979-9bf1-48a09d21c885",
+          "booking_id": "string",
+          "user_id": "2a31a476-7f31-4e26-851b-fa72325b1189",
+          "offer": {
+            "id": "46fdeaad-93eb-45ae-9b3b-067b1be192d6",
+            "booking_slot_id": "string",
+            "expires_in": {
+              "id": "c3e23a1b-f74b-4461-8bad-19c1ab6f06b9",
+              "booking_id": "string",
+              "expires_in": "string",
+              "work_days": "string",
+              "amount": "string",
+              "currency": "string",
+              "percentage_fee": "string",
+              "payout_method": "string",
+              "type": "Stuffs"
+            },
+            "work_days": "string",
+            "amount": "string",
+            "currency": "string",
+            "percentage_fee": "string",
+            "payout_method": "string",
+            "negotiation_history": "string",
+            "type": "Stuffs"
+          },
+          "position": "string",
+          "provider": "string",
+          "updated_at": "2022-06-14T13:21:45.498Z",
+          "created_at": "2022-06-14T13:21:45.498Z",
+          "type": "Stuffs"
+        }
+      ],
+      "queued_slots": [
+        {
+          "id": "457a0eac-7019-4b27-b36b-9c6aefbd3b88",
+          "booking_id": "string",
+          "user_id": "4af3fb24-c1a0-4e54-982a-5dba55a9a0f8",
+          "position": "string",
+          "forced_assignment": "string",
+          "updated_at": "2022-06-14T13:21:46.628Z",
+          "created_at": "2022-06-14T13:21:46.629Z",
+          "type": "Stuffs"
+        }
+      ],
+      "offer_blueprint": {
+        "id": "c3e23a1b-f74b-4461-8bad-19c1ab6f06b9",
+        "booking_id": "string",
+        "expires_in": "string",
+        "work_days": "string",
+        "amount": "string",
+        "currency": "string",
+        "percentage_fee": "string",
+        "payout_method": "string",
+        "type": "Stuffs"
+      },
+      "type": "Stuffs"
+    }
+  ],
+  "type": "Stuffs"
+}

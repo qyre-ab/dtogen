@@ -4,12 +4,14 @@ class CreateShelf extends Equatable {
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
+    required this.names,
     required this.books,
   });
 
   final String userId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<String> names;
   final List<CreateShelfBook> books;
 
   @override
@@ -17,6 +19,7 @@ class CreateShelf extends Equatable {
         userId,
         createdAt,
         updatedAt,
+        names,
         books,
       ];
 }
@@ -27,6 +30,7 @@ class CreateShelfDto {
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
+    required this.names,
     required this.books,
   });
 
@@ -35,6 +39,7 @@ class CreateShelfDto {
       userId: entity.userId,
       createdAt: entity.createdAt.toString(),
       updatedAt: entity.updatedAt.toString(),
+      names: entity.names,
       books: entity.books.map(CreateShelfBookDto.fromEntity).toList(),
     );
   }
@@ -42,6 +47,7 @@ class CreateShelfDto {
   final String userId;
   final String createdAt;
   final String updatedAt;
+  final List<String> names;
   final List<CreateShelfBookDto> books;
 
   Map<String, dynamic> toJson() => _$CreateShelfDtoToJson(this);

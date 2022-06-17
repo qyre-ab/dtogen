@@ -34,6 +34,7 @@ and `toEntity` for DTOs.
   "user_id": "string",
   "created_at": "2022-06-16",
   "updated_at": "2022-06-16",
+  "names": ["string"],
   "books": [
     {
       "books_needed": 0,

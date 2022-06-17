@@ -13,11 +13,9 @@ class ClassField {
 
   late final isList = type.startsWith("List");
   late final genericType = _getGenericType();
-  late final isPrimitiveType = _isPrimitiveType();
+  late final primitiveType = isPrimitiveType(type);
 
-  bool _isPrimitiveType() {
-    return ['int', 'String', 'double', 'bool'].contains(type);
-  }
+  static const primitiveTypes = ['int', 'String', 'double', 'bool'];
 
   String _getGenericType() {
     return type.replaceAll("List<", "").replaceAll(">", "");
@@ -38,4 +36,8 @@ class ClassField {
       value: value ?? this.value,
     );
   }
+}
+
+bool isPrimitiveType(String type) {
+  return ClassField.primitiveTypes.contains(type);
 }

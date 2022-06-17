@@ -1,4 +1,5 @@
 import 'package:json_to_dart_entity/dto_generator/class_generator.dart';
+import 'package:json_to_dart_entity/dto_generator/dto_field.dart';
 import 'package:json_to_dart_entity/dto_generator/string_extension.dart';
 
 class DtoGenerator extends ClassGenerator {
@@ -66,8 +67,11 @@ class DtoGenerator extends ClassGenerator {
       if (fieldDateValue != null) {
         fieldValue = "$fieldValue.toString()";
       } else if (field.isList) {
-        fieldValue = "$fieldValue.map(${field.genericType}.fromEntity).toList()";
-      } else if (!field.isPrimitiveType) {
+        final genericType = field.genericType;
+        if (!isPrimitiveType(genericType)) {
+          fieldValue = "$fieldValue.map(${field.genericType}.fromEntity).toList()";
+        }
+      } else if (!field.primitiveType) {
         fieldValue = "${field.type}.fromEntity(entity.${field.name})";
       }
       buffer.writeln("      ${field.name}: $fieldValue,");
@@ -86,8 +90,11 @@ class DtoGenerator extends ClassGenerator {
       if (fieldDateValue != null) {
         fieldValue = "DateTime.parse($fieldValue)";
       } else if (field.isList) {
-        fieldValue = "$fieldValue.map((e) => e.toEntity()).toList()";
-      } else if (!field.isPrimitiveType) {
+        final genericType = field.genericType;
+        if (!isPrimitiveType(genericType)) {
+          fieldValue = "$fieldValue.map((e) => e.toEntity()).toList()";
+        }
+      } else if (!field.primitiveType) {
         fieldValue = "$fieldValue.toEntity()";
       }
 

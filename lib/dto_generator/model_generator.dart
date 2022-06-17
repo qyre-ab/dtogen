@@ -89,6 +89,14 @@ class ModelGenerator {
     if (prefix == null) return className;
 
     final prefixParts = prefix.splitByUpperCase();
+    if (prefixParts.length == 1) {
+      if (className.startsWith(prefix)) {
+        return className;
+      } else {
+        "$prefix$className";
+      }
+    }
+
     for (var i = prefixParts.length - 1; i > 0; i--) {
       final prefixPart = prefixParts.skip(i).join();
       if (className.startsWith(prefixPart)) {

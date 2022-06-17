@@ -7,13 +7,15 @@
       "program": "lib/main.dart",
       "args": [
         "--input",
-        "booking.json",
+        "shelf.json",
         "--init-class",
-        "Period",
+        "Shelf",
         "--output",
-        "booking.dart",
+        "shelf.dart",
         "--prefix",
-        "UpdateBooking"
+        "CreateShelf",
+        "--no-from-json",
+        "--no-to-entity",
       ]
     }
   ]

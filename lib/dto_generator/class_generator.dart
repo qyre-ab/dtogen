@@ -5,10 +5,13 @@ abstract class ClassGenerator {
   const ClassGenerator({
     required this.className,
     required this.fields,
+    required this.generateImports,
   });
 
   final String className;
   final List<ClassField> fields;
+
+  final bool generateImports;
 
   String generate() {
     final buffer = StringBuffer();
@@ -17,6 +20,15 @@ abstract class ClassGenerator {
   }
 
   void generateClass(StringBuffer buffer);
+
+  void writeImport(StringBuffer buffer, {required String import}) {
+    buffer.writeln("import '$import';");
+  }
+
+  @protected
+  void writePart(StringBuffer buffer, {required String import}) {
+    buffer.writeln("part '$import';");
+  }
 
   @protected
   void writeClassDeclaration(

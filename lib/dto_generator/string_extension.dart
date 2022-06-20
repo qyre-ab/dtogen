@@ -19,6 +19,10 @@ extension StringExtension on String {
     return replaceAll("Dto", "");
   }
 
+  String camelCaseToSnakeCase() {
+    return splitByUpperCase().map((e) => e.toLowerCase()).join("_");
+  }
+
   List<String> splitByUpperCase() {
     return split(RegExp("(?=[A-Z])"));
   }

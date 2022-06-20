@@ -2,9 +2,10 @@ import 'package:dtogen/dto_generator/class_generator.dart';
 import 'package:dtogen/dto_generator/dto_field.dart';
 import 'package:dtogen/dto_generator/string_extension.dart';
 
-class EntityClassGenerator extends ClassGenerator {
-  EntityClassGenerator({
+class EntityGenerator extends ClassGenerator {
+  EntityGenerator({
     required super.className,
+    required super.generateImports,
     required List<ClassField> fields,
     required this.addCopyWith,
   }) : super(
@@ -15,6 +16,15 @@ class EntityClassGenerator extends ClassGenerator {
 
   @override
   void generateClass(StringBuffer buffer) {
+    if (generateImports) {
+      writeImport(buffer, import: "package:equatable/equatable.dart");
+      if (addCopyWith) {
+        writeImport(buffer, import: "package:copy_with_extension/copy_with_extension.dart");
+        writeLine(buffer);
+        writePart(buffer, import: "${className.camelCaseToSnakeCase()}.g.dart");
+      }
+      writeLine(buffer);
+    }
     writeClassDeclaration(
       buffer,
       annotation: addCopyWith ? "@CopyWith()" : null,

@@ -2,6 +2,7 @@ import 'package:dtogen/dto_generator/class_generator.dart';
 import 'package:dtogen/dto_generator/dto_class_generator.dart';
 import 'package:dtogen/dto_generator/dto_field.dart';
 import 'package:dtogen/dto_generator/entity_generator.dart';
+import 'package:dtogen/dto_generator/generated_models_result.dart';
 import 'package:dtogen/dto_generator/string_extension.dart';
 
 class ModelGenerator {
@@ -13,6 +14,7 @@ class ModelGenerator {
     required this.generateEntity,
     required this.generateCopyWith,
     required this.classNamePrefix,
+    required this.generateImports,
   });
 
   final bool generateFromJson;
@@ -23,17 +25,20 @@ class ModelGenerator {
   final bool generateEntity;
   final bool generateCopyWith;
 
+  final bool generateImports;
+
   final String? classNamePrefix;
 
-  String generateModels(Json json, [String? initialClassName]) {
-    final classes = _parseClasses(json, initialClassName ?? "Generated");
+  GeneratedModelsResult generate(Json json, [String? initialClassName]) {
+    final classGenerators = _createClassGenerators(json, initialClassName);
+    return GeneratedModelsResult(
+      dtoGenerators: classGenerators.whereType<DtoGenerator>().toList(),
+      entityGenerators: classGenerators.whereType<EntityGenerator>().toList(),
+    );
+  }
 
-    final buffer = StringBuffer();
-    for (final cl in classes.toList().reversed) {
-      buffer.writeln(cl.generate());
-    }
-
-    return buffer.toString();
+  List<ClassGenerator> _createClassGenerators(Json json, [String? initialClassName]) {
+    return _parseClasses(json, initialClassName ?? "Generated").toList();
   }
 
   Set<ClassGenerator> _parseClasses(Json json, String initialClassName) {
@@ -54,6 +59,7 @@ class ModelGenerator {
     final effectiveClassName = _addPrefixWithoutDuplications(className);
     final fields = _parseClassFields(json, generatedClasses);
     final classGenerator = DtoGenerator(
+      generateImports: generateImports,
       className: effectiveClassName,
       fields: fields,
       generateFromJson: generateFromJson,
@@ -64,7 +70,8 @@ class ModelGenerator {
     generatedClasses.add(classGenerator);
     if (generateEntity) {
       generatedClasses.add(
-        EntityClassGenerator(
+        EntityGenerator(
+          generateImports: generateImports,
           className: effectiveClassName,
           fields: fields,
           addCopyWith: generateCopyWith,

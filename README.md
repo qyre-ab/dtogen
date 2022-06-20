@@ -16,6 +16,8 @@ Options:
     --no-from-entity    Don't generate `fromEntity` factory for DTO
     --no-to-entity      Don't generate `toEntity` method for DTO
     --no-copy           Don't generate `CopyWith` annotation
+-s, --split-by-files    Create a file for each generated models.
+                        Files are stored in the provided by output option folder.
 -i, --input             Path to the json file
 -o, --output            Path to the output dart file. Prints to console if not specified
     --init-class        Name of the root model

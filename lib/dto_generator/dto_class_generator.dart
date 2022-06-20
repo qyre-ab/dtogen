@@ -1,4 +1,3 @@
-
 import 'package:dtogen/dto_generator/class_generator.dart';
 import 'package:dtogen/dto_generator/dto_field.dart';
 import 'package:dtogen/dto_generator/string_extension.dart';
@@ -11,6 +10,7 @@ class DtoGenerator extends ClassGenerator {
     required this.generateToJson,
     required this.generateFromEntity,
     required this.generateToEntity,
+    required super.generateImports,
   }) : super(className: "${className}Dto");
 
   final bool generateFromJson;
@@ -23,6 +23,12 @@ class DtoGenerator extends ClassGenerator {
 
   @override
   void generateClass(StringBuffer buffer) {
+    if (generateImports) {
+      writeImport(buffer, import: "package:json_annotation/json_annotation.dart");
+      writeLine(buffer);
+      writePart(buffer, import: "${className.camelCaseToSnakeCase()}.g.dart");
+      writeLine(buffer);
+    }
     writeClassDeclaration(buffer, annotation: _jsonSerializableAnnotation);
     writeConstructor(buffer);
     writeLine(buffer);

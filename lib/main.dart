@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:dtogen/args_parser.dart';
 import 'package:dtogen/dto_generator/model_generator.dart';
+import 'package:dtogen/output_generator.dart';
 
 Future<void> main(List<String> args) async {
   final argsParser = describeArguments();
   final parsedArgs = argsParser.parse(args);
 
-  if (parsedArgs[help]) {
+  if (parsedArgs[help] || args.isEmpty) {
     print(
       """
 A command-line app which is used to generate DTOs and Entities from json.
@@ -25,6 +26,7 @@ ${argsParser.usage}""",
   if (pathToJson == null) throw Exception("Path to the JSON file must be specified");
   final String initClassName = parsedArgs[initialClassName];
   final generateEntity = !parsedArgs[noEntity];
+  final shouldSplitByFiles = parsedArgs[splitByFiles];
   final String? pathToOutput = parsedArgs[output];
   final fileWithJson = File(pathToJson);
 
@@ -38,7 +40,7 @@ ${argsParser.usage}""",
       print("Json's top-level structure supposed to be a Map but given is ${json.runtimeType}");
       exit(1);
     }
-    final generatedModels = ModelGenerator(
+    final modelsGenerator = ModelGenerator(
       generateFromJson: !parsedArgs[noFromJson],
       generateToJson: !parsedArgs[noToJson],
       generateEntity: generateEntity,
@@ -46,12 +48,14 @@ ${argsParser.usage}""",
       generateToEntity: !parsedArgs[noToEntity] && generateEntity,
       generateCopyWith: !parsedArgs[noCopy] && generateEntity,
       classNamePrefix: parsedArgs[prefix],
-    ).generateModels(json, initClassName);
-
-    if (pathToOutput != null) {
-      await File(pathToOutput).writeAsString(generatedModels);
-    } else {
-      print(generatedModels);
-    }
+      generateImports: shouldSplitByFiles,
+    );
+    final generateResult = modelsGenerator.generate(json, initClassName);
+    final outputGenerator = OutputGenerator(
+      generatedModelsResult: generateResult,
+      splitByFiles: shouldSplitByFiles,
+      pathToOutput: pathToOutput,
+    );
+    outputGenerator.generateOutput();
   }
 }

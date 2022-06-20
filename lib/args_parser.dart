@@ -11,6 +11,7 @@ const output = "output";
 const initialClassName = "init-class";
 const prefix = "prefix";
 const help = "help";
+const splitByFiles = "split-by-files";
 
 ArgParser describeArguments() {
   final parser = ArgParser();
@@ -27,6 +28,13 @@ ArgParser describeArguments() {
     ..addFlag(noFromEntity, negatable: false, help: "Don't generate `fromEntity` factory for DTO")
     ..addFlag(noToEntity, negatable: false, help: "Don't generate `toEntity` method for DTO")
     ..addFlag(noCopy, negatable: false, help: "Don't generate `CopyWith` annotation")
+    ..addFlag(
+      splitByFiles,
+      abbr: 's',
+      negatable: false,
+      help: "Create a file for each generated models.\n"
+          "Files are stored in the provided by $output option folder.",
+    )
     ..addOption(input, abbr: "i", help: "Path to the json file")
     ..addOption(output, abbr: "o", help: "Path to the output dart file. Prints to console if not specified")
     ..addOption(

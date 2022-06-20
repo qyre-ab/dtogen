@@ -1,4 +1,4 @@
-import 'package:json_to_dart_entity/dto_generator/dto_field.dart';
+import 'package:dtogen/dto_generator/dto_field.dart';
 import 'package:meta/meta.dart';
 
 abstract class ClassGenerator {

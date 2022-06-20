@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:json_to_dart_entity/args_parser.dart';
-import 'package:json_to_dart_entity/dto_generator/model_generator.dart';
+import 'package:dtogen/args_parser.dart';
+import 'package:dtogen/dto_generator/model_generator.dart';
 
 Future<void> main(List<String> args) async {
   final argsParser = describeArguments();
@@ -21,7 +21,8 @@ ${argsParser.usage}""",
     return;
   }
 
-  final String pathToJson = parsedArgs[input];
+  final String? pathToJson = parsedArgs[input];
+  if (pathToJson == null) throw Exception("Path to the JSON file must be specified");
   final String initClassName = parsedArgs[initialClassName];
   final generateEntity = !parsedArgs[noEntity];
   final String? pathToOutput = parsedArgs[output];

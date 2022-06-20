@@ -1,6 +1,7 @@
-import 'package:json_to_dart_entity/dto_generator/class_generator.dart';
-import 'package:json_to_dart_entity/dto_generator/dto_field.dart';
-import 'package:json_to_dart_entity/dto_generator/string_extension.dart';
+
+import 'package:dtogen/dto_generator/class_generator.dart';
+import 'package:dtogen/dto_generator/dto_field.dart';
+import 'package:dtogen/dto_generator/string_extension.dart';
 
 class DtoGenerator extends ClassGenerator {
   const DtoGenerator({

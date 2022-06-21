@@ -15,7 +15,7 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - shelf.dart
+    - example/generated_shelf.dart
 # Uncomment the following section to specify additional rules.
 
 # linter:

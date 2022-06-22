@@ -16,7 +16,7 @@ packages:
     source: hosted
     version: "4.1.0"
   args:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: args
       url: "https://pub.dartlang.org"
@@ -67,9 +67,11 @@ packages:
   dtogen:
     dependency: "direct main"
     description:
-      path: "../dtogen"
-      relative: true
-    source: path
+      path: "packages/dtogen"
+      ref: HEAD
+      resolved-ref: "189c65196bbb69dbcbc58d141084d9596d0ddc0b"
+      url: "https://github.com/qyre-ab/dtogen.git"
+    source: git
     version: "1.0.0"
   file:
     dependency: transitive
